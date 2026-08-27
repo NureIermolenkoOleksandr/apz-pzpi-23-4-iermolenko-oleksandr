@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SmartLockApp.ViewModels"
+             x:Class="SmartLockApp.Views.MainPage"
+             x:Name="ThisPage"
+             Title="Мої замки"
+             BackgroundColor="#0D0D12"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, Auto, *">
+     
+        <VerticalStackLayout Padding="20,50,20,10">
+            <Label Text="Smart Lock" FontSize="28" FontAttributes="Bold" TextColor="White"/>
+            <Label Text="Доступні вам приміщення" FontSize="14" TextColor="#8E8E93"/>
+        </VerticalStackLayout>
+  
+        <SearchBar Grid.Row="1" Text="{Binding SearchQuery}" 
+               Placeholder="Пошук кімнати або замка..." 
+               BackgroundColor="#1C1C23" TextColor="White" 
+               CancelButtonColor="#0A84FF" PlaceholderColor="#6C6C70" 
+               Margin="20,0,20,10" />
+
+        <RefreshView Grid.Row="2" Command="{Binding LoadAccessesCommand}" IsRefreshing="{Binding IsRefreshing}" RefreshColor="#0A84FF">
+            <CollectionView ItemsSource="{Binding GroupedAccesses}" IsGrouped="True" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="Нічого не знайдено." TextColor="#8E8E93" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,50,0,0"/>
+                </CollectionView.EmptyView>
+
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="vm:AccessGroup">
+                        <Label Text="{Binding GroupName}" FontSize="14" FontAttributes="Bold" TextColor="#8E8E93" Margin="20,15,20,5" TextTransform="Uppercase" />
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:AccessKeyDisplayItem">
+                        <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="16" Padding="20" Margin="20,5,20,10">
+                            <VerticalStackLayout Spacing="15">
+
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding OriginalKey.Device.Name}" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                                        <Label Text="{Binding OriginalKey.Device.SerialNumber}" FontSize="12" TextColor="#8E8E93"/>
+                                      
+                                        <Label Text="{Binding TimeRemainingText}" FontSize="12" TextColor="{Binding TimeRemainingColor}" FontAttributes="Bold" Margin="0,5,0,0"/>
+                                    </VerticalStackLayout>
+
+                                  
+                                    <Frame Grid.Column="1" BackgroundColor="#1C2C23" BorderColor="#34C759" CornerRadius="8" Padding="10,5" VerticalOptions="Start">
+                                        <Label Text="{Binding OriginalKey.Device.Status}" FontSize="12" TextColor="#34C759" FontAttributes="Bold"/>
+                                    </Frame>
+                                </Grid>
+
+                                <BoxView HeightRequest="1" Color="#2C2C35"/>
+
+                                <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                                    <Button Grid.Column="0" 
+                                            Text="Відкрити" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoteOpenCommand}" 
+                                            CommandParameter="{Binding .}" 
+                                            BackgroundColor="#0A84FF" 
+                                            TextColor="White" 
+                                            CornerRadius="10" 
+                                            FontAttributes="Bold"/>
+
+                                    <Button Grid.Column="1" 
+                                            Text="PIN-код" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.TogglePinCommand}" 
+                                            CommandParameter="{Binding .}" 
+                                            BackgroundColor="#2C2C35" 
+                                            TextColor="White" 
+                                            CornerRadius="10" 
+                                            FontAttributes="Bold"/>
+                                </Grid>
+
+                                <VerticalStackLayout IsVisible="{Binding IsPinVisible}" Margin="0,15,0,0" Spacing="10">
+                                    <BoxView HeightRequest="1" Color="#2C2C35" Margin="0,0,0,10"/>
+
+                                    <Label Text="ОФЛАЙН ДОСТУП" FontSize="12" FontAttributes="Bold" TextColor="#8E8E93" HorizontalOptions="Center"/>
+
+                                    <Label Text="{Binding CurrentPin}" FontSize="38" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" CharacterSpacing="5"/>
+
+                                    <Label Text="{Binding PinRemainingText}" FontSize="12" TextColor="#8E8E93" HorizontalOptions="Center" Margin="0,-5,0,0"/>
+
+                                    
+                                    <ProgressBar Progress="{Binding PinProgress}" ProgressColor="#0A84FF" BackgroundColor="#2C2C35" HeightRequest="4"/>
+                                </VerticalStackLayout>
+
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+
+</ContentPage>

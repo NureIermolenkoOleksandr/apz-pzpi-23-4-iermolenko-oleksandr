@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:SmartLockApp.Views"
+       x:Class="SmartLockApp.AppShell"
+       Shell.FlyoutBehavior="Disabled"
+       BackgroundColor="#0D0D12"
+       Shell.TabBarBackgroundColor="#1C1C23"
+       Shell.TabBarTitleColor="#0A84FF"
+       Shell.TabBarUnselectedColor="#8E8E93">
+    <ShellItem Route="LoginItem" FlyoutItemIsVisible="False">
+        <ShellContent Route="LoginPage" 
+                      ContentTemplate="{DataTemplate views:LoginPage}" 
+                      Shell.TabBarIsVisible="False" />
+    </ShellItem>
+
+    <TabBar Route="MainTabs">
+      
+        <Tab Title="Замки">
+            <ShellContent Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}" />
+        </Tab>
+
+        <Tab Title="Профіль">
+            <ShellContent Route="ProfilePage" ContentTemplate="{DataTemplate views:ProfilePage}" />
+        </Tab>
+    </TabBar>
+
+</Shell>

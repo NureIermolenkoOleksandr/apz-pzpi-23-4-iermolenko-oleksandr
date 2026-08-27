@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SmartLockApp.ViewModels"
+             x:Class="SmartLockApp.Views.RegisterPage"
+             BackgroundColor="#0D0D12"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,60,30,30" Spacing="20">
+
+            <Label Text="Створити акаунт" FontSize="32" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+            <Label Text="Доєднайтеся до Smart Lock" FontSize="16" TextColor="#8E8E93" HorizontalOptions="Center" Margin="0,-10,0,20"/>
+
+            <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                <Entry Text="{Binding FullName}" Placeholder="ПІБ" PlaceholderColor="#6C6C70" TextColor="White" ClearButtonVisibility="WhileEditing"/>
+            </Frame>
+
+            <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                <Entry Text="{Binding Email}" Placeholder="Email" PlaceholderColor="#6C6C70" TextColor="White" Keyboard="Email" ClearButtonVisibility="WhileEditing"/>
+            </Frame>
+
+            <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                <Entry Text="{Binding Password}" Placeholder="Пароль" PlaceholderColor="#6C6C70" TextColor="White" IsPassword="True" ClearButtonVisibility="WhileEditing"/>
+            </Frame>
+
+            <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                <Entry Text="{Binding ConfirmPassword}" Placeholder="Підтвердіть пароль" PlaceholderColor="#6C6C70" TextColor="White" IsPassword="True" ClearButtonVisibility="WhileEditing"/>
+            </Frame>
+
+            <Label Text="{Binding ErrorMessage}" TextColor="#FF453A" FontSize="14" IsVisible="{Binding HasError}" HorizontalOptions="Center"/>
+
+            <Grid Margin="0,10,0,0">
+                <Button Text="Зареєструватися" Command="{Binding RegisterCommand}" BackgroundColor="#0A84FF" TextColor="White" CornerRadius="12" HeightRequest="55" FontAttributes="Bold" FontSize="16" IsEnabled="{Binding IsNotBusy}"/>
+                <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Margin="0,20,0,0">
+                <Label Text="Вже є акаунт?" TextColor="#8E8E93" VerticalOptions="Center"/>
+                <Label Text="Увійти" TextColor="#0A84FF" FontAttributes="Bold" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

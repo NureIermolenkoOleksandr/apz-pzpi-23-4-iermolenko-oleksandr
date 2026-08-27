@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartLockApp.Views.ProfilePage"
+             Title="ProfilePage">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,50,30,30" Spacing="25">
+
+            <Label Text="Мій профіль" FontSize="28" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
+
+            <Frame BackgroundColor="#1C1C23" CornerRadius="50" HeightRequest="100" WidthRequest="100" HorizontalOptions="Center" HasShadow="False" Padding="0">
+                <Label Text="👤" FontSize="50" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Frame>
+
+            <Label Text="{Binding Role}" FontSize="14" FontAttributes="Bold" TextColor="#0A84FF" HorizontalOptions="Center" TextTransform="Uppercase" Margin="0,-15,0,10"/>
+
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Повне ім'я" TextColor="#8E8E93" FontSize="14" Margin="0,0,0,-10"/>
+                <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                    <Entry Text="{Binding FullName}" TextColor="White" IsReadOnly="{Binding IsNotEditing}" ClearButtonVisibility="WhileEditing"/>
+                </Frame>
+
+                <Label Text="Email (не редагується)" TextColor="#8E8E93" FontSize="14" Margin="0,0,0,-10"/>
+                <Frame BackgroundColor="#1C1C23" BorderColor="Transparent" CornerRadius="12" Padding="15,5">
+                    <Entry Text="{Binding Email}" TextColor="#6C6C70" IsReadOnly="True"/>
+                </Frame>
+            </VerticalStackLayout>
+
+
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,20,0,0">
+                <Button Grid.Column="0" Text="Редагувати" Command="{Binding EditProfileCommand}" IsVisible="{Binding IsNotEditing}" BackgroundColor="#2C2C35" TextColor="White" CornerRadius="12" FontAttributes="Bold" HeightRequest="50"/>
+                <Button Grid.Column="0" Text="Зберегти" Command="{Binding SaveProfileCommand}" IsVisible="{Binding IsEditing}" BackgroundColor="#34C759" TextColor="White" CornerRadius="12" FontAttributes="Bold" HeightRequest="50"/>
+
+                <Button Grid.Column="1" Text="Вийти" Command="{Binding LogoutCommand}" BackgroundColor="#FF453A" TextColor="White" CornerRadius="12" FontAttributes="Bold" HeightRequest="50"/>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
