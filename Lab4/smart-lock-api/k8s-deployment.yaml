@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: smart-lock
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: smart-lock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_USER
+          value: "admin"
+        - name: POSTGRES_PASSWORD
+          value: "secure_password"
+        - name: POSTGRES_DB
+          value: "smart_lock"
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: smart-lock
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  namespace: smart-lock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2
+        ports:
+        - containerPort: 1883
+        - containerPort: 9001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: smart-lock
+spec:
+  ports:
+  - name: mqtt
+    port: 1883
+  - name: ws
+    port: 9001
+  selector:
+    app: mosquitto
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-lock-api
+  namespace: smart-lock
+spec:
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: smart-lock-api
+  template:
+    metadata:
+      labels:
+        app: smart-lock-api
+    spec:
+      containers:
+      - name: api
+        image: smart-lock-api:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+     
+        - name: DATABASE_URL
+          value: "postgresql://admin:secure_password@postgres.smart-lock.svc.cluster.local:5432/smart_lock?schema=public"
+        - name: MQTT_BROKER_URL
+          value: "mqtt://mosquitto.smart-lock.svc.cluster.local:1883"
+        - name: JWT_SECRET
+          value: "docker_super_secret_key"
+        - name: PORT
+          value: "3000"
+      
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: smart-lock-api-service
+  namespace: smart-lock
+spec:
+  type: NodePort 
+  ports:
+  - port: 80
+    targetPort: 3000
+    nodePort: 30081 
+    protocol: TCP
+  selector:
+    app: smart-lock-api
